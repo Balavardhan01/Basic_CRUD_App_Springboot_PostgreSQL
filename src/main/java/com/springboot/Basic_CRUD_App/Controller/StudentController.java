@@ -1,6 +1,5 @@
 package com.springboot.Basic_CRUD_App.Controller;
 
-
 import com.springboot.Basic_CRUD_App.Entity.Student;
 import com.springboot.Basic_CRUD_App.Service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -8,30 +7,50 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
 
-    private StudentService service;
-    public StudentController(StudentService service){
-        this.service=service;
+    private final StudentService service;
+
+    public StudentController(StudentService service) {
+        this.service = service;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student){
-        Student createdStudent=service.createStudent(student);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        Student createdStudent = service.createStudent(student);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getStudents(){
-        return ResponseEntity.status(HttpStatus.FOUND).body(service.getStudents());
+    public ResponseEntity<List<Student>> getStudents() {
+        return ResponseEntity.ok(service.getStudents()); // Returns 200 OK
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Student>> getStudentById(@PathVariable int id){
-        return ResponseEntity.status(HttpStatus.FOUND).body(service.getStudentById(id));
+    public ResponseEntity<Student> getStudentById(@PathVariable int id) {
+        return service.getStudentById(id)
+                .map(ResponseEntity::ok) // Unwraps Optional and returns 200 OK with Student
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Returns 404 NOT FOUND
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student) {
+        Student updatedStudent = service.updateStudent(id, student);
+        if (updatedStudent == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedStudent);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
+        boolean isDeleted = service.deleteStudent(id);
+        if (!isDeleted) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok("Student deleted successfully with ID: " + id);
     }
 }

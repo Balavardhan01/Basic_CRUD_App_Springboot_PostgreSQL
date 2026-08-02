@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/students")
@@ -27,5 +28,10 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<List<Student>> getStudents(){
         return ResponseEntity.status(HttpStatus.FOUND).body(service.getStudents());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Student>> getStudentById(@PathVariable int id){
+        return ResponseEntity.status(HttpStatus.FOUND).body(service.getStudentById(id));
     }
 }

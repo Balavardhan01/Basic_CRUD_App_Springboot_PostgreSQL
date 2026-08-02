@@ -5,6 +5,7 @@ import com.springboot.Basic_CRUD_App.Repository.StudentRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -21,5 +22,9 @@ public class StudentService {
 
     public List<Student> getStudents(){
         return repo.findAll();
+    }
+
+    public Optional<Student> getStudentById(int id) {
+        return repo.findById(id);
     }
 }

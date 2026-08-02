@@ -5,9 +5,12 @@ import com.springboot.Basic_CRUD_App.Entity.Student;
 import com.springboot.Basic_CRUD_App.Service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
@@ -22,5 +25,10 @@ public class StudentController {
     public ResponseEntity<Student> createStudent(Student student){
         Student createdStudent=service.createStudent(student);
         return  ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Student>> getStudents(){
+        return ResponseEntity.status(HttpStatus.FOUND).body(service.getStudents());
     }
 }

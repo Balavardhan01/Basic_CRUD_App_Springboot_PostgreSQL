@@ -4,6 +4,8 @@ import com.springboot.Basic_CRUD_App.Entity.Student;
 import com.springboot.Basic_CRUD_App.Repository.StudentRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StudentService {
 
@@ -15,5 +17,9 @@ public class StudentService {
     public Student createStudent(Student student){
         repo.save(student);
         return student;
+    }
+
+    public List<Student> getStudents(){
+        return repo.findAll();
     }
 }

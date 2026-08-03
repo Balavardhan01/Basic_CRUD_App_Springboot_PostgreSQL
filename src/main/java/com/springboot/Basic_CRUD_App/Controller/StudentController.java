@@ -20,6 +20,7 @@ public class StudentController {
 
     @PostMapping("/create")
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        student.setDeleted(false);
         Student createdStudent = service.createStudent(student);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
@@ -51,6 +52,15 @@ public class StudentController {
         if (!isDeleted) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok("Student deleted successfully with ID: " + id);
+        return ResponseEntity.ok("Student deleted permanently with ID: " + id);
+    }
+
+    @PatchMapping("/soft-delete")
+    public ResponseEntity<String> softDelete(@RequestParam int id){
+        Boolean isDeleted=service.deleteStudentSoft(id);
+        if(!isDeleted){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok("Student Deleted");
     }
 }

@@ -17,20 +17,21 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
+        student.setDeleted(false);
         return repo.save(student); // Return the entity returned by save()
     }
 
     public List<Student> getStudents() {
-        return repo.findAll();
+        return repo.findByDeletedIsFalse();
     }
 
     public Optional<Student> getStudentById(int id) {
-        return repo.findById(id);
+        return Optional.ofNullable(repo.findById(id).orElse(null));
     }
 
     public Student updateStudent(int id, Student studentDetails) {
         // Ensure entity exists before performing update
-        return repo.findById(id).map(existingStudent -> {
+        return repo.findByIdAndDeletedIsFalse(id).map(existingStudent -> {
             existingStudent.setName(studentDetails.getName());
             existingStudent.setMail(studentDetails.getMail());
             existingStudent.setGender(studentDetails.getGender());
@@ -44,6 +45,16 @@ public class StudentService {
             return false;
         }
         repo.deleteById(id);
+        return true;
+    }
+    public boolean deleteStudentSoft(int id){
+        Optional<Student> studentPresent=repo.findByIdAndDeletedIsFalse(id);
+        if(studentPresent.isEmpty()) return false;
+
+        Student save=studentPresent.get();
+        save.setDeleted(true);
+        repo.save(save);
+
         return true;
     }
 }

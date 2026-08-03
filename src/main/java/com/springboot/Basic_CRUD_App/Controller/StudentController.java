@@ -24,20 +24,20 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
 
-    @GetMapping
+    @GetMapping("/fetch")
     public ResponseEntity<List<Student>> getStudents() {
         return ResponseEntity.ok(service.getStudents()); // Returns 200 OK
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable int id) {
+    @GetMapping("/fetchById")
+    public ResponseEntity<Student> getStudentById(@RequestParam int id) {
         return service.getStudentById(id)
                 .map(ResponseEntity::ok) // Unwraps Optional and returns 200 OK with Student
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Returns 404 NOT FOUND
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student) {
+    @PutMapping("/update")
+    public ResponseEntity<Student> updateStudent(@RequestParam int id, @RequestBody Student student) {
         Student updatedStudent = service.updateStudent(id, student);
         if (updatedStudent == null) {
             return ResponseEntity.notFound().build();
@@ -45,8 +45,8 @@ public class StudentController {
         return ResponseEntity.ok(updatedStudent);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteStudent(@RequestParam int id) {
         boolean isDeleted = service.deleteStudent(id);
         if (!isDeleted) {
             return ResponseEntity.notFound().build();
